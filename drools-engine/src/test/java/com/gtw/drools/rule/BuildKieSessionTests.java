@@ -28,7 +28,7 @@ public class BuildKieSessionTests {
         info.setCount(10);
 
         String xlsFilePath = this.getClass().getClassLoader().getResource("./xls/score_sign.xls").getPath();
-        KieSession kieSession = KieSessionUtils.buildKieSessionFromFile(xlsFilePath);
+        KieSession kieSession = KieSessionUtils.buildKieSessionFromFiles(xlsFilePath);
         kieSession.getAgenda().getAgendaGroup("score_sign").setFocus();
         kieSession.insert(info);
         kieSession.setGlobal("amountMap", amountMap);
@@ -41,8 +41,8 @@ public class BuildKieSessionTests {
 
     @Test
     public void test_read_drl() throws FileNotFoundException {
-        String xlsFilePath = this.getClass().getClassLoader().getResource("./drools/rule02.drl").getPath();
-        KieSession kieSession = KieSessionUtils.buildKieSessionFromFile(xlsFilePath);
+        String xlsFilePath = this.getClass().getClassLoader().getResource("drools/rule02.drl").getPath();
+        KieSession kieSession = KieSessionUtils.buildKieSessionFromFiles(xlsFilePath);
         LoverFact loverFact = new LoverFact();
         loverFact.setName("aaa");
         kieSession.insert(loverFact);
@@ -58,7 +58,7 @@ public class BuildKieSessionTests {
         loverFact.setName("aaa");
 
         String xlsFilePath = this.getClass().getClassLoader().getResource("./xls/score_sign.xls").getPath();
-        String drlFilePath = this.getClass().getClassLoader().getResource("./drools/rule02.drl").getPath();
+        String drlFilePath = this.getClass().getClassLoader().getResource("drools/rule02.drl").getPath();
         KieSession kieSession = KieSessionUtils.buildKieSessionFromFiles(xlsFilePath, drlFilePath);
         kieSession.getAgenda().getAgendaGroup("score_sign").setFocus();
         kieSession.insert(info);

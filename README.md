@@ -1,2 +1,60 @@
 # spring-boot-drools
-Drools使用
+### KIE的生命周期
+
+- 编写：编写规则文件，比如：DRL，BPMN2、决策表、实体类等。
+- 构建：构建一个可以发布部署的组件，对于KIE来说是JAR文件。
+- 测试：部署之前对规则进行测试。
+- 部署：利用Maven仓库将jar部署到应用程序。
+- 使用：程序加载jar文件，通过KieContainer对其进行解析创建KieSession。
+- 执行：通过KieSession对象的API与Drools引擎进行交互，执行规则。
+- 交互：用户通过命令行或者UI与引擎进行交互。
+- 管理：管理KieSession或者KieContainer对象。
+
+
+
+### 组成
+
+- KieServices 
+
+  规则引擎服务，其实例是提供了一个服务注册列表，提供访问KIE关于构建和运行的相关对象。通过它来获取来的各种对象，完成规则构建、管理和执行操作。
+
+  - 获取KieContainer
+  - 获取KieResponsitory
+  - 获取KieSession
+
+- KieContainer
+
+  就是一个KieBase的容器，内部依旧是通过KieBase来创建KieSession。
+
+- KieBase
+
+  知识仓库，包含若干规则、流程和方法等，KieBase本身不包含运行时的相关数据。如果要执行KieBase中规则，需要根据KieBase创建KieSession。
+
+- KieResponsitory
+
+  KieResponsitory是一个单例对象，是存放管理KieModule的仓库，KieModule由`kmodule.xml`来定义。
+
+- KieSession
+
+  真正执行规则运行时的会话
+
+  
+
+### Rules语法
+
+```java
+package rules;
+dialect "java"; // 指定Java语言
+
+import com.gtw.drools.model.UserInfoFact;
+
+
+rule "规则名称一" // 需唯一
+  when
+      $d : Double($d == 100) // 满足括号中的规则
+      $u : User(age > 18) // 多个规则需要同时满足，即$d和$u要同时满足
+  then
+      System.out.println("rule01 drl test result :  " + $d);
+  end
+```
+
