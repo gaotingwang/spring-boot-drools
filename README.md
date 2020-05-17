@@ -50,11 +50,58 @@ import com.gtw.drools.model.UserInfoFact;
 
 
 rule "规则名称一" // 需唯一
-  when
-      $d : Double($d == 100) // 满足括号中的规则
-      $u : User(age > 18) // 多个规则需要同时满足，即$d和$u要同时满足
-  then
-      System.out.println("rule01 drl test result :  " + $d);
-  end
+// 规则属性  
+  
+  	when
+      	$d : Double($d == 100) // 满足括号中的规则
+      	$u : User(age > 18) // 多个规则需要同时满足，即$d和$u要同时满足
+  	then
+      	System.out.println("rule01 drl test result :  " + $d);
+end
+  
+/*谨慎insert、update、modify、delete操作，会变更Fact，导致之前执行过的规则会再次触发，防止自身触发no-loop true，防止触发其他规则，在其他规则上加lock-on-active true*/      
+rule "rule - a"
+no-loop true // 这里也可以用lock-on-active true ，Fact变更不会触发再次执行
+    when
+        $lover : LoverFact(name != "王五");
+    then
+        System.out.println("rule - a:" + $lover.getName());
+        $lover.setName("李四");
+        update($lover);
+end
+
+// lock-on-active 不会由Fact的变更再次触发
+rule "rule - b"
+lock-on-active true
+    when
+        $lover : LoverFact(name == "李四");
+    then
+        System.out.println("rule - b:" + $lover.getName());
+end
+  
+/*salience指定规则执行顺序，值越大，优先级越高。不指定默认为0，执行顺序随机，可以指定为负数*/
+rule "salience - test3"
+salience sa // 也可以动态指定，由Person age动态决定执行顺序
+		when 
+  			$p : Person(sa : age)
+    then
+        System.out.println("salience - test3:" + $p.getAge());
+end
+  
+
+rule "rule - b"
+agenda-group "aaa" // agenda-group 需要激活才会执行该规则
+//auto-focus true // 默认当前agenda自动focus
+activation-group "group01" // 相同activation-group只会评估一个，默认按顺序执行第一个；指定salience，则选salience最大的执行
+salience 1000
+    when
+        $lover : LoverFact();
+    then
+        System.out.println("2");
+end
+  
+  
+  
+  
 ```
 

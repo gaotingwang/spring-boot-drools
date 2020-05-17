@@ -1,0 +1,23 @@
+package rules;
+
+import com.gtw.drools.model.*;
+
+
+rule "rule - a"
+no-loop true // 这里也可以用lock-on-active true ，Fact变更不会触发再次执行
+    when
+        $lover : LoverFact(name != "王五");
+    then
+        System.out.println("rule - a:" + $lover.getName());
+        $lover.setName("李四");
+        update($lover);
+    end
+
+// lock-on-active 不会由Fact的变更再次触发
+rule "rule - b"
+lock-on-active true
+    when
+        $lover : LoverFact(name == "李四");
+    then
+        System.out.println("rule - b:" + $lover.getName());
+end

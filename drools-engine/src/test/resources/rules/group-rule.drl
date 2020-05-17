@@ -1,0 +1,49 @@
+package rules;
+dialect  "java"
+
+import com.gtw.drools.model.*;
+
+// agenda-group 需要激活才会执行该规则
+rule "rule - d"
+agenda-group "aaa"
+    when
+        $lover : LoverFact(name == "AAA");
+    then
+        System.out.println("激活a");
+end
+
+// agenda-group 需要激活才会执行该规则
+rule "rule - e"
+agenda-group "bbb"
+//auto-focus true // 默认当前agenda自动focus
+    when
+        $lover : LoverFact(name == "AAA");
+    then
+        System.out.println("激活b");
+end
+
+rule "rule - a"
+    when
+        $lover : LoverFact();
+    then
+        System.out.println("1");
+end
+
+// 相同activation-group只会评估一个，默认按顺序执行第一个；指定salience，则选salience最大的执行
+rule "rule - b"
+activation-group "group01"
+salience 1000
+    when
+        $lover : LoverFact();
+    then
+        System.out.println("2");
+end
+
+rule "rule - c"
+activation-group "group01"
+salience 100
+    when
+        $lover : LoverFact();
+    then
+        System.out.println("3");
+end

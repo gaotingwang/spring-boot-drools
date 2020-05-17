@@ -1,0 +1,29 @@
+package rules;
+
+import com.gtw.drools.model.*;
+
+
+rule "rule - a"
+//date-effective "17-May-2020" // 默认格式 "dd-MMM-yyyy"
+date-effective "2020-05-17" // 到达指定日期才生效
+    when
+    then
+        System.out.println("rule - a 被触发");
+end
+
+rule "rule - b"
+date-expires "2020-05-18" // 该规则在指定失效
+    when
+    then
+        System.out.println("rule - b 被触发" );
+end
+
+
+/*定时器*/
+rule "rule - c"
+//timer(int: 5s 1s) // 初始化5s以后执行，每隔1s执行一次
+timer(cron: 0/1 * * * * ?) // 初始化5s以后执行，每隔1s执行一次
+    when
+    then
+        System.out.println("rule - c 被触发" );
+end
