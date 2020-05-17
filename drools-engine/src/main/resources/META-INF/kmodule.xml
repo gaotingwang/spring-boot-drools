@@ -1,6 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" ?>
-<kmodule xmlns="http://www.drools.org/xsd/kmodule">
-    <kbase name="rules" packages="droolRule">
-        <ksession name="ksession-rule"/>
-    </kbase>
+<?xml version="1.0" encoding="UTF-8"?>
+<kmodule xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://www.drools.org/xsd/kmodule">
 </kmodule>

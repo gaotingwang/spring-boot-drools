@@ -1,0 +1,73 @@
+package rules;
+dialect  "java"
+
+import com.gtw.drools.model.*;
+
+// 相同activation-group只会评估一个，默认按顺序执行第一个；指定salience，则选salience最大的执行
+rule "rule - a"
+activation-group "group01"
+salience 999
+    when
+        $lover : LoverFact();
+    then
+        System.out.println("1");
+end
+
+rule "rule - b"
+activation-group "group01"
+salience 1000
+    when
+        $lover : LoverFact();
+    then
+        System.out.println("2");
+end
+
+rule "rule - c"
+activation-group "group01"
+salience 100
+    when
+        $lover : LoverFact();
+    then
+        System.out.println("3");
+end
+
+/*========================================================================================*/
+
+/*
+// agenda-group 需要激活才会执行该规则
+rule "rule - d"
+agenda-group "abc"
+    when
+        $lover : LoverFact(name == "AAA");
+    then
+        System.out.println("激活");
+end
+*/
+
+/*========================================================================================*/
+
+
+/*
+rule "rule - e"
+no-loop true
+    when
+        $lover : LoverFact(name == "BBB");
+    then
+        System.out.println($lover.getName());
+        LoverFact lover = new LoverFact();
+        insert(lover);
+        retract($lover); // 删除
+        kcontext.getKieRuntime().getAgenda().getAgendaGroup("group001").setFocus();
+end
+
+
+rule "rule - f"
+agenda-group "group001"
+no-loop true
+lock-on-active true
+    when
+        $lover : LoverFact(name == "CCC");
+    then
+        System.out.println($lover.getName());
+end
+*/

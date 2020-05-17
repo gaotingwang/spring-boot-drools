@@ -1,0 +1,91 @@
+package rules;
+dialect "java"; // 指定Java语言
+
+import com.gtw.drools.model.UserInfoFact;
+
+// 总结：
+// 1. 接同类型对象
+// 2. 满足括号中的规则
+// 3. 多个规则需要根据配置同时满足
+
+rule "评估double类型，且double为0d - test01"
+when
+    $d : Double($d == 100)
+//    $d : Double(this == 0)
+then
+    System.out.println("rule01 drl test result :  " + $d);
+end
+/*
+
+*/
+/*========================================================================================*//*
+
+// or = ||
+// , = and = &&  ,不可与|| && 同时使用
+rule "评估用户 - test02"
+when
+    $u : UserInfoFact(name == "张" || name == "李");
+//    $u : UserInfo(name == "张" && name == "李", age == 20)
+then
+    System.err.println("test02 : " + $u);
+end
+
+*/
+/*========================================================================================*//*
+
+// 总结：
+// List   .get()   List[]
+// Map    .get()   Map[]
+rule "评估用户List - test03"
+when
+    $u : UserInfoFact(interests.get(0) == "tea");
+//    $u : UserInfo(interests[0] == "tea");
+then
+    System.err.println("test03 : " + $u);
+end
+
+
+rule "评估用户Map - test04"
+when
+    $u : UserInfoFact(tags.get("job") == "se");
+//    $u : UserInfo(tags["job"] == "se");
+then
+    System.err.println("test04 : " + $u);
+end
+
+
+rule "包含contains - test05"
+when
+    $u : UserInfoFact(interests contains "tea");
+then
+    System.err.println("test05 : " + $u);
+end
+
+rule "被包含memberOf - test06"
+when
+    $u : UserInfoFact("tea" memberOf interests);
+then
+    System.err.println("test06 : " + $u);
+end
+
+
+rule "from memberOf - test07"
+when
+    $u : UserInfoFact();
+    $s : String(this == "tea" || this == "coffee") from $u.interests;
+then
+    System.err.println("test08 : " + $s);
+end
+
+
+*/
+/*========================================================================================*//*
+
+rule "正则memberOf - test08"
+when
+    $u : UserInfoFact(name matches "Tony.*");
+then
+    System.err.println("test07 : " + $u);
+end
+*/
+

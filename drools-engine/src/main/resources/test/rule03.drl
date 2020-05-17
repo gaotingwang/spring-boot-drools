@@ -1,0 +1,9 @@
+package rules;
+dialect "java";
+
+rule "default kiesession test"
+when
+    $d : Double($d == 100)
+then
+    System.out.println("rule03 drl test result : " + $d);
+end
