@@ -6,6 +6,7 @@ import com.gtw.drools.model.types.*;
 
 import java.util.Date;
 
+// insert(); update(); modify(); delete() 都是KnowledgeHelper中的方法
 rule "Classify Customer - Gold"
     when
         $c: Customer( category == Customer.Category.GOLD )

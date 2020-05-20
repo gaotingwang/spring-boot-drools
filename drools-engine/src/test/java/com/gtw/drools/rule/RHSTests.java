@@ -24,13 +24,13 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.assertThat;
 
-public class GlobalTests {
+public class RHSTests {
 
     private KieSession kieSession;
 
     @Before
     public void before() throws FileNotFoundException {
-        String drlFilePath = this.getClass().getClassLoader().getResource("rules/global-rule.drl").getPath();
+        String drlFilePath = this.getClass().getClassLoader().getResource("drools/rule04.drl").getPath();
         kieSession = KieSessionUtils.buildKieSessionFromFiles(drlFilePath);
     }
 

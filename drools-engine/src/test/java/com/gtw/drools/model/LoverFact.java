@@ -5,4 +5,6 @@ import lombok.Data;
 @Data
 public class LoverFact {
     private String name;
+
+    private int age;
 }

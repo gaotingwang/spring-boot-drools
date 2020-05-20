@@ -1,0 +1,17 @@
+package rules
+
+import com.gtw.drools.model.LoverFact;
+
+rule "query-rule-base"
+    when
+        $lover: LoverFact(age > 18)
+    then
+        System.out.println("query-rule-base: " + $lover.getAge());
+end
+
+// query语法提供查询working memory中符合约束条件的Fact对象
+// query名称需要全局唯一
+query "query-by-name"(Integer ageParam)
+    // 仅包含LHS部分，不用指定when，then
+    $lover:LoverFact(age >= ageParam)
+end

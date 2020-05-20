@@ -22,7 +22,7 @@ end
 /*定时器*/
 rule "rule - c"
 //timer(int: 5s 1s) // 初始化5s以后执行，每隔1s执行一次
-timer(cron: 0/1 * * * * ?) // 初始化5s以后执行，每隔1s执行一次
+timer(cron: 0/1 * * * * ?) // 每隔1s执行一次
     when
     then
         System.out.println("rule - c 被触发" );

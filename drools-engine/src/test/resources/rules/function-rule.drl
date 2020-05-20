@@ -1,0 +1,16 @@
+package rules
+
+import com.gtw.drools.model.LoverFact;
+
+rule "query-rule-base"
+    when
+        $lover: LoverFact();
+    then
+        System.out.println(sayHello($lover.getName()));
+end
+
+// function 相当于Java中方法，编译器会生成相应的辅助类
+// 多处调用的业务封装到一个方法中，参数和返回结果与Java一样
+function String sayHello(String nameParm) {
+    return "hello " + nameParm;
+}

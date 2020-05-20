@@ -1,0 +1,24 @@
+package rules
+
+import com.gtw.drools.model.LoverFact;
+
+rule "condition-rule-1"
+    no-loop true
+    when
+        $lover: LoverFact(age > 18)
+        if (name == "李四") do[modifyLover] // 选择分支不走then，走then[modifyLover]，第二次走then
+    then
+        System.out.println("condition-rule-1: " + $lover.getAge());
+    then[modifyLover]
+        modify($lover){
+            setAge(20)
+        }
+end
+
+// 规则可以继承，age >18 && name=李四
+rule "condition-rule-2" extends "condition-rule-1"
+    when
+        $love: LoverFact(name == "李四")
+    then
+        System.out.println("condition-rule-2: " + $love.getName() + "," + $love.getAge());
+end
