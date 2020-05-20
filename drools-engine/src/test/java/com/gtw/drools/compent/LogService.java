@@ -11,8 +11,4 @@ public class LogService {
     public static void writeInfoLog(String ruleName, String logContent) {
         log.info("{} is fire , and the result is : {}", ruleName, logContent);
     }
-
-    public void writeInfoLog(String logContent) {
-        log.info(logContent);
-    }
 }

@@ -7,7 +7,8 @@ import com.gtw.drools.model.LoverFact;
 // 2. 来操作规则执行结果，从规则返回数据
 // 3. global 变量不会插入到working memory中，所以，除非作为常量值，否则不应该将全局变量用于规则约束中
 // 4. 多个包中声明具有相同标识符的全局变量，必须是相同类型，并且它们都引用相同的全局值
-global com.gtw.drools.compent.LogService logService;
+global com.gtw.drools.compent.LogService logService; // 没有通过kieSession.setGlobal，则只能调用静态方法
+global org.slf4j.Logger log;
 
 rule "global-rule-1"
     when
@@ -15,6 +16,6 @@ rule "global-rule-1"
     then
         // 调用静态方法，如工具类方法
         //logService.writeInfoLog("global-rule-1", "condition-rule-1: " + $lover.getName());
-        // 实例方法调用，需要通过kieSession.setGlobal("logService", logService);
-        logService.writeInfoLog("condition-rule-1: " + $lover.getName());
+        // 实例方法调用，需要通过kieSession.setGlobal("log", log);
+        log.info("{} is fire , and the result is : {}", "global-rule-1", $lover.getName());
 end

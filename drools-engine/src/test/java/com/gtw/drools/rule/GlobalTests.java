@@ -2,17 +2,15 @@ package com.gtw.drools.rule;
 
 import java.io.FileNotFoundException;
 
-import com.gtw.drools.compent.LogService;
 import com.gtw.drools.model.LoverFact;
 import com.gtw.drools.util.KieSessionUtils;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.kie.api.runtime.KieSession;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.junit.Assert.assertThat;
-
+@Slf4j
 public class GlobalTests {
     private KieSession kieSession;
 
@@ -36,10 +34,8 @@ public class GlobalTests {
         LoverFact loverFact = new LoverFact();
         loverFact.setName("BBB");
 
-        LogService logService = new LogService();
-
-        // 服务化Global使用方式
-        kieSession.setGlobal("logService", logService);
+        // 服务化Global使用方式,例如引入日志框架
+        kieSession.setGlobal("log", log);
         kieSession.insert(loverFact);
         kieSession.fireAllRules();
     }
