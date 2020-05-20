@@ -1,0 +1,49 @@
+package rules
+
+import com.gtw.drools.model.LoverFact;
+import java.util.Date
+
+rule "declare-rule-1"
+    when
+        eval(true)
+    then
+        Address address = new Address();
+        address.setName("中国");
+        address.setCity("北京");
+        address.setCode(10000);
+        address.setDate(new Date());
+        insert(address);
+end
+
+rule "declare-rule-2"
+    when
+        $address: Address($address.getName() == CountryEnum.CHINA.getName())
+    then
+        System.out.println("declare-rule-2:" + $address);
+end
+
+// Address继承Country，所以insert(address),也会触发此规则
+rule "declare-rule-3"
+    when
+        $country: Country()
+    then
+        System.out.println("declare-rule-3:" + $country);
+end
+
+declare Country
+    name: String
+end
+
+// 声明支持继承
+declare Address extends Country
+    city: String @key // 当前值构造函数 Address(String city)
+    code: int
+    date: Date
+end
+
+// 支持枚举
+declare enum CountryEnum
+    CHINA("中国"),JANPAN("日本");
+    name: String
+end
+
