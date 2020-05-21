@@ -1,6 +1,6 @@
 package com.gtw.drools.rule;
 
-import com.gtw.drools.util.KieSessionUtils;
+import com.gtw.drools.util.KieSessionUtil;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -17,7 +17,7 @@ public class DateTests {
 
         // 必须在获取Session前设置时间格式
         System.setProperty("drools.dateformat", "yyyy-MM-dd");
-        kieSession = KieSessionUtils.buildKieSessionFromFiles(drlFilePath);
+        kieSession = KieSessionUtil.buildKieSessionFromFiles(drlFilePath);
     }
 
     @Test

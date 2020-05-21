@@ -2,7 +2,7 @@ package com.gtw.drools.rule;
 
 import java.io.FileNotFoundException;
 
-import com.gtw.drools.util.KieSessionUtils;
+import com.gtw.drools.util.KieSessionUtil;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -19,7 +19,7 @@ public class DeclareTests {
     @Before
     public void before() throws FileNotFoundException {
         String drlFilePath = this.getClass().getClassLoader().getResource("rules/declare-rule.drl").getPath();
-        kieSession = KieSessionUtils.buildKieSessionFromFiles(drlFilePath);
+        kieSession = KieSessionUtil.buildKieSessionFromFiles(drlFilePath);
     }
 
     @Test

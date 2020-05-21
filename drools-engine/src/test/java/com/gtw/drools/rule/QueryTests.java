@@ -1,25 +1,13 @@
 package com.gtw.drools.rule;
 
 import java.io.FileNotFoundException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
-import java.util.List;
 
-import com.gtw.drools.model.Coupon;
-import com.gtw.drools.model.Customer;
-import com.gtw.drools.model.Item;
 import com.gtw.drools.model.LoverFact;
-import com.gtw.drools.model.Order;
-import com.gtw.drools.model.OrderLine;
-import com.gtw.drools.model.types.IsGoldCustomer;
-import com.gtw.drools.model.types.IsLowRangeItem;
-import com.gtw.drools.util.KieSessionUtils;
+import com.gtw.drools.util.KieSessionUtil;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.kie.api.runtime.KieSession;
-import org.kie.api.runtime.ObjectFilter;
 import org.kie.api.runtime.rule.QueryResults;
 import org.kie.api.runtime.rule.QueryResultsRow;
 
@@ -34,7 +22,7 @@ public class QueryTests {
     @Before
     public void before() throws FileNotFoundException {
         String drlFilePath = this.getClass().getClassLoader().getResource("rules/query-rule.drl").getPath();
-        kieSession = KieSessionUtils.buildKieSessionFromFiles(drlFilePath);
+        kieSession = KieSessionUtil.buildKieSessionFromFiles(drlFilePath);
     }
 
     @Test

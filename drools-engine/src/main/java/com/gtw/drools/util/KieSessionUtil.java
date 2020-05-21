@@ -21,6 +21,7 @@ import org.kie.api.conf.EventProcessingOption;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
+import org.kie.api.runtime.StatelessKieSession;
 import org.kie.internal.utils.KieHelper;
 
 /**
@@ -28,7 +29,7 @@ import org.kie.internal.utils.KieHelper;
  * @author gtw
  */
 @Slf4j
-public class KieSessionUtils {
+public class KieSessionUtil {
     /**
      * 规则文件DRL后缀
      */
@@ -62,23 +63,64 @@ public class KieSessionUtils {
      * @return KieSession
      */
     public static KieSession buildKieSessionFromFiles(String... filePaths) throws FileNotFoundException {
+        List<String> rules = getRuleFromFiles(filePaths);
+        return buildKieSessionFromRuleString(rules);
+    }
+
+    /**
+     * 从规则文件（DRL,EXCEL,CSV）生成StatelessKieSession
+     * @param filePaths 规则文件的绝对路径
+     * @return StatelessKieSession
+     */
+    public static StatelessKieSession buildStatelessKieSessionFromFiles(String... filePaths) throws FileNotFoundException {
+        List<String> rules = getRuleFromFiles(filePaths);
+        return buildStatelessKieSessionFromRuleString(rules);
+    }
+
+    /**
+     * 根据规则字符串生成KieSession
+     * @param rules 规则字符串
+     * @return KieSession
+     */
+    public static KieSession buildKieSessionFromRuleString(List<String> rules) {
+        // TODO Model 模式了解，这里写死了
+        KieBase kieBase = decodeToSession(Model.STREAM, rules);
+        return kieBase.newKieSession();
+    }
+
+    /**
+     * 根据规则字符串生成StatelessKieSession
+     * @param rules 规则字符串
+     * @return StatelessKieSession
+     */
+    public static StatelessKieSession buildStatelessKieSessionFromRuleString(List<String> rules) {
+        // TODO Model 模式了解，这里写死了
+        KieBase kieBase = decodeToSession(Model.STREAM, rules);
+        return kieBase.newStatelessKieSession();
+    }
+
+    /**
+     * 解析多个规则文件生成规则字符串集合
+     * @param filePaths 规则文件路径
+     * @return 规则字符串集合
+     */
+    public static List<String> getRuleFromFiles(String... filePaths) throws FileNotFoundException {
         List<String> rules = new ArrayList<>();
         for (String filePath : filePaths) {
             rules.add(getRuleString(filePath));
         }
-        // TODO Model 模式了解，这里写死了
-        return decodeToSession(Model.STREAM, rules);
+        return rules;
     }
 
     /**
-     * 把字符串解析成KieSession
+     * 根据规则字符串生成KieBase
      * @param model
-     * @param drls 规则文件字符串
-     * @return  KieSession
+     * @param rules 规则字符串
+     * @return KieBase
      */
-    public static KieSession decodeToSession(Model model, List<String> drls) {
+    private static KieBase decodeToSession(Model model, List<String> rules) {
         KieHelper kieHelper = new KieHelper();
-        for (String drl : drls) {
+        for (String drl : rules) {
             kieHelper.addContent(drl, ResourceType.DRL);
         }
         hasErrorMessage(kieHelper.verify());
@@ -89,8 +131,7 @@ public class KieSessionUtils {
         } else {
             config.setOption(EventProcessingOption.CLOUD);
         }
-        KieBase kieBase = kieHelper.build(config);
-        return kieBase.newKieSession();
+        return kieHelper.build(config);
     }
 
     /**
@@ -192,7 +233,7 @@ public class KieSessionUtils {
     }
 
 
-    private KieSessionUtils() {
+    private KieSessionUtil() {
     }
 
 }

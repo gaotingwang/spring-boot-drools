@@ -6,7 +6,7 @@ import java.util.Map;
 
 import com.gtw.drools.model.LoverFact;
 import com.gtw.drools.model.ScoreInfo;
-import com.gtw.drools.util.KieSessionUtils;
+import com.gtw.drools.util.KieSessionUtil;
 import org.junit.Test;
 import org.kie.api.runtime.KieSession;
 
@@ -16,7 +16,7 @@ public class BuildKieSessionTests {
     public void test_load_all_rules(){
         // 扫描resources目录下的所有DRL文件生成KieSession
         // rule01.drl和rule03.drl都会被扫出来
-        KieSession kieSession = KieSessionUtils.buildDefaultKieSession();
+        KieSession kieSession = KieSessionUtil.buildDefaultKieSession();
         kieSession.insert(100d);
         kieSession.fireAllRules();
     }
@@ -28,7 +28,7 @@ public class BuildKieSessionTests {
         info.setCount(10);
 
         String xlsFilePath = this.getClass().getClassLoader().getResource("./xls/score_sign.xls").getPath();
-        KieSession kieSession = KieSessionUtils.buildKieSessionFromFiles(xlsFilePath);
+        KieSession kieSession = KieSessionUtil.buildKieSessionFromFiles(xlsFilePath);
         kieSession.getAgenda().getAgendaGroup("score_sign").setFocus();
         kieSession.insert(info);
         kieSession.setGlobal("amountMap", amountMap);
@@ -42,7 +42,7 @@ public class BuildKieSessionTests {
     @Test
     public void test_read_drl() throws FileNotFoundException {
         String xlsFilePath = this.getClass().getClassLoader().getResource("drools/rule02.drl").getPath();
-        KieSession kieSession = KieSessionUtils.buildKieSessionFromFiles(xlsFilePath);
+        KieSession kieSession = KieSessionUtil.buildKieSessionFromFiles(xlsFilePath);
         LoverFact loverFact = new LoverFact();
         loverFact.setName("aaa");
         kieSession.insert(loverFact);
@@ -59,7 +59,7 @@ public class BuildKieSessionTests {
 
         String xlsFilePath = this.getClass().getClassLoader().getResource("./xls/score_sign.xls").getPath();
         String drlFilePath = this.getClass().getClassLoader().getResource("drools/rule02.drl").getPath();
-        KieSession kieSession = KieSessionUtils.buildKieSessionFromFiles(xlsFilePath, drlFilePath);
+        KieSession kieSession = KieSessionUtil.buildKieSessionFromFiles(xlsFilePath, drlFilePath);
         kieSession.getAgenda().getAgendaGroup("score_sign").setFocus();
         kieSession.insert(info);
         kieSession.insert(loverFact);

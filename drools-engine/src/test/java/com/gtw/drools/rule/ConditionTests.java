@@ -3,8 +3,7 @@ package com.gtw.drools.rule;
 import java.io.FileNotFoundException;
 
 import com.gtw.drools.model.LoverFact;
-import com.gtw.drools.util.KieSessionUtils;
-import org.junit.After;
+import com.gtw.drools.util.KieSessionUtil;
 import org.junit.Before;
 import org.junit.Test;
 import org.kie.api.runtime.KieSession;
@@ -18,7 +17,7 @@ public class ConditionTests {
     @Before
     public void before() throws FileNotFoundException {
         String drlFilePath = this.getClass().getClassLoader().getResource("rules/condition-rule.drl").getPath();
-        kieSession = KieSessionUtils.buildKieSessionFromFiles(drlFilePath);
+        kieSession = KieSessionUtil.buildKieSessionFromFiles(drlFilePath);
     }
 
     @Test

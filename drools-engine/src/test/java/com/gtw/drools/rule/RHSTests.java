@@ -13,7 +13,7 @@ import com.gtw.drools.model.Order;
 import com.gtw.drools.model.OrderLine;
 import com.gtw.drools.model.types.IsGoldCustomer;
 import com.gtw.drools.model.types.IsLowRangeItem;
-import com.gtw.drools.util.KieSessionUtils;
+import com.gtw.drools.util.KieSessionUtil;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -31,7 +31,7 @@ public class RHSTests {
     @Before
     public void before() throws FileNotFoundException {
         String drlFilePath = this.getClass().getClassLoader().getResource("drools/rule04.drl").getPath();
-        kieSession = KieSessionUtils.buildKieSessionFromFiles(drlFilePath);
+        kieSession = KieSessionUtil.buildKieSessionFromFiles(drlFilePath);
     }
 
     @Test

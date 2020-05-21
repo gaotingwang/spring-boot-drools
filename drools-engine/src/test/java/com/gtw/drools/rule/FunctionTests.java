@@ -3,13 +3,11 @@ package com.gtw.drools.rule;
 import java.io.FileNotFoundException;
 
 import com.gtw.drools.model.LoverFact;
-import com.gtw.drools.util.KieSessionUtils;
+import com.gtw.drools.util.KieSessionUtil;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.kie.api.runtime.KieSession;
-import org.kie.api.runtime.rule.QueryResults;
-import org.kie.api.runtime.rule.QueryResultsRow;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
@@ -21,7 +19,7 @@ public class FunctionTests {
     @Before
     public void before() throws FileNotFoundException {
         String drlFilePath = this.getClass().getClassLoader().getResource("rules/function-rule.drl").getPath();
-        kieSession = KieSessionUtils.buildKieSessionFromFiles(drlFilePath);
+        kieSession = KieSessionUtil.buildKieSessionFromFiles(drlFilePath);
     }
 
     @Test

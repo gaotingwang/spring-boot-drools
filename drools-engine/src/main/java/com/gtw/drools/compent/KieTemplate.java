@@ -2,7 +2,7 @@ package com.gtw.drools.compent;
 
 import java.io.FileNotFoundException;
 
-import com.gtw.drools.util.KieSessionUtils;
+import com.gtw.drools.util.KieSessionUtil;
 import org.kie.api.runtime.KieSession;
 
 /**
@@ -11,7 +11,7 @@ import org.kie.api.runtime.KieSession;
 public class KieTemplate {
 
     public void dealWithFileRules(Object obj, String... filePaths) throws FileNotFoundException {
-        KieSession kieSession = KieSessionUtils.buildKieSessionFromFiles(filePaths);
+        KieSession kieSession = KieSessionUtil.buildKieSessionFromFiles(filePaths);
         kieSession.insert(obj);
         kieSession.fireAllRules();
     }
