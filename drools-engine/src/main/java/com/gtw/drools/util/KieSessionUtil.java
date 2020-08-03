@@ -12,6 +12,8 @@ import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.drools.decisiontable.InputType;
 import org.drools.decisiontable.SpreadsheetCompiler;
+import org.drools.decisiontable.parser.DefaultRuleSheetListener;
+import org.drools.decisiontable.parser.RuleSheetListener;
 import org.kie.api.KieBase;
 import org.kie.api.KieBaseConfiguration;
 import org.kie.api.KieServices;
@@ -25,7 +27,7 @@ import org.kie.api.runtime.StatelessKieSession;
 import org.kie.internal.utils.KieHelper;
 
 /**
- * 生成KieSession工具类
+ * KieSession 获取工具类
  * @author gtw
  */
 @Slf4j
@@ -83,8 +85,8 @@ public class KieSessionUtil {
      * @return KieSession
      */
     public static KieSession buildKieSessionFromRuleString(List<String> rules) {
-        // TODO Model 模式了解，这里写死了
-        KieBase kieBase = decodeToSession(Model.STREAM, rules);
+        // 默认使用Stream，支持事件
+        KieBase kieBase = decodeToKieBase(Model.STREAM, rules);
         return kieBase.newKieSession();
     }
 
@@ -94,8 +96,8 @@ public class KieSessionUtil {
      * @return StatelessKieSession
      */
     public static StatelessKieSession buildStatelessKieSessionFromRuleString(List<String> rules) {
-        // TODO Model 模式了解，这里写死了
-        KieBase kieBase = decodeToSession(Model.STREAM, rules);
+        // 默认使用Stream，支持事件
+        KieBase kieBase = decodeToKieBase(Model.STREAM, rules);
         return kieBase.newStatelessKieSession();
     }
 
@@ -113,12 +115,24 @@ public class KieSessionUtil {
     }
 
     /**
+     * 从文件流内容中解析出规则字符串
+     * @param inputStream 决策表文件流
+     * @param inputType CSV / XLS
+     * @param listener 决策表监听对象
+     * @return 决策表中对应的规则字符串
+     */
+    public static String getRuleString(InputStream inputStream, InputType inputType, RuleSheetListener listener) {
+        SpreadsheetCompiler compiler = new SpreadsheetCompiler();
+        return compiler.compile(inputStream, inputType, listener);
+    }
+
+    /**
      * 根据规则字符串生成KieBase
      * @param model
      * @param rules 规则字符串
      * @return KieBase
      */
-    private static KieBase decodeToSession(Model model, List<String> rules) {
+    private static KieBase decodeToKieBase(Model model, List<String> rules) {
         KieHelper kieHelper = new KieHelper();
         for (String drl : rules) {
             kieHelper.addContent(drl, ResourceType.DRL);
@@ -160,8 +174,7 @@ public class KieSessionUtil {
         }
 
         InputStream inputStream = new FileInputStream(file);
-        SpreadsheetCompiler compiler = new SpreadsheetCompiler();
-        String drl = compiler.compile(inputStream, inputType);
+        String drl = getRuleString(inputStream, inputType, new DefaultRuleSheetListener());
         log.info("{} file rule string is : {}", file.getName(), drl);
         return drl;
     }
@@ -193,7 +206,7 @@ public class KieSessionUtil {
                     fis.close();
                 }
             } catch (IOException e) {
-                throw new IllegalStateException(file.getName() + " transDrlFile2String release fail ", e);
+                e.printStackTrace();
             }
 
         }

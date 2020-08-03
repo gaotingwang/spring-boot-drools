@@ -1,0 +1,21 @@
+package rules;
+
+import com.gtw.drools.model.FeedBackInfo;
+
+global java.util.List validList;
+global org.slf4j.Logger log;
+
+rule "工单回捞生效范围规则"
+    lock-on-active true
+    when
+        $feedback : FeedBackInfo(
+            submitUser memberOf ["AE8", "AE9", "app", "auto", "pc-map", "mo-map", "po", "cc", "public_feedback"],
+            errorDesc not memberOf ["听不懂","没声音"],
+            userGroup not memberOf ["禁止信息","步行设施"],
+            description not matches ("^#*(其他|已关闭|位置错误|找不到)#*$")
+        )
+    then
+        log.info("{} 工单在回捞生效范围", $feedback.getDataId());
+        validList.add($feedback);
+end
+

@@ -10,6 +10,9 @@ import com.gtw.drools.model.LoverFact;
 global com.gtw.drools.compent.LogService logService; // 没有通过kieSession.setGlobal，则只能调用静态方法
 global org.slf4j.Logger log;
 
+// global 使用场景
+// LHS: 作为条件参数（获取判断条件、常量）；
+// RHS: 搜集信息（List， Map等）；系统交互（通知、报警、更新）
 rule "global-rule-1"
     when
         $lover: LoverFact()

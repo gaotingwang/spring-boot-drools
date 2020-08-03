@@ -43,6 +43,7 @@
 ### Rules语法
 
 ```java
+
 package rules;
 dialect "java"; // 指定Java语言
 
@@ -99,9 +100,44 @@ salience 1000
     then
         System.out.println("2");
 end
-  
-  
-  
-  
+
 ```
 
+
+
+## 决策表
+
+### RuleSet区域
+- RuleSet -- package
+- Sequential -- 指定为TRUE，按excel表格顺序执行
+- SequentialMaxPriority
+- SequentialMinPriority
+- EscapeQuotes
+- NumericDisabled
+- Import -- 引入依赖包
+- Variables -- 定义全局变量 global
+- Functions -- 定义function函数
+- Queries
+- Declare
+
+### RuleTable区域
+
+- NAME -- 规则名称，即为每个规则指定的名称，须唯一
+- DESCRIPTION -- 规则描述，会在规则文件中加注释
+- CONDITION -- 即指定LHS中内容
+- ACTION -- 即指定RHS中内容
+- METADATA
+
+#### 规则属性
+
+- PRIORITY 设置优先级，对应规则里的salience
+- DURATION
+- TIMER
+- ENABLED
+- CALENDARS
+- NO-LOOP
+- LOCK-ON-ACTIVE
+- AUTO-FOCUS
+- ACTIVATION-GROUP
+- AGENDA-GROUP
+- RULEFLOW-GROUP

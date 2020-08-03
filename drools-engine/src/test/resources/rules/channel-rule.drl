@@ -1,0 +1,16 @@
+package rules
+
+import com.gtw.drools.model.LoverFact;
+
+// 类比 global 来看
+// 为session与外界通信提供了一套标准化的方式
+// 只能用于 RHS
+// 使用需要实现Channel接口
+// 没有返回值
+rule "channel-rule-1"
+    when
+        $lover: LoverFact()
+    then
+        // 目前插件不支持语法检测，所有的channel以map形式存储，通过channel["channelService"]获取指定channel
+        channels["channelService"].send($lover.getName());
+end
