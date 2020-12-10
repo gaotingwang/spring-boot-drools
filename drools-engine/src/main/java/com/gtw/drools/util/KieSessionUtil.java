@@ -6,7 +6,6 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.List;
 
 import lombok.extern.slf4j.Slf4j;
@@ -61,57 +60,57 @@ public class KieSessionUtil {
 
     /**
      * 从规则文件（DRL,EXCEL,CSV）生成KieSession
-     * @param filePaths 规则文件的绝对路径
+     * @param filePath 规则文件的绝对路径
      * @return KieSession
      */
-    public static KieSession buildKieSessionFromFiles(String... filePaths) throws FileNotFoundException {
-        List<String> rules = getRuleFromFiles(filePaths);
-        return buildKieSessionFromRuleString(rules);
+    public static KieSession buildKieSessionFromFile(String filePath) throws FileNotFoundException {
+        String ruleKey = "rule_" + filePath;
+        String rule = getRuleFromFile(filePath);
+        return buildKieSessionFromRuleString(ruleKey, rule);
     }
 
     /**
      * 从规则文件（DRL,EXCEL,CSV）生成StatelessKieSession
-     * @param filePaths 规则文件的绝对路径
+     * @param filePath 规则文件的绝对路径
      * @return StatelessKieSession
      */
-    public static StatelessKieSession buildStatelessKieSessionFromFiles(String... filePaths) throws FileNotFoundException {
-        List<String> rules = getRuleFromFiles(filePaths);
-        return buildStatelessKieSessionFromRuleString(rules);
+    public static StatelessKieSession buildStatelessKieSessionFromFile(String filePath) throws FileNotFoundException {
+        String ruleKey = "rule_" + filePath;
+        String rule = getRuleFromFile(filePath);
+        return buildStatelessKieSessionFromRuleString(ruleKey, rule);
     }
 
     /**
      * 根据规则字符串生成KieSession
-     * @param rules 规则字符串
+     * @param ruleKey 规则的key值
+     * @param ruleContent 规则内容字符串
      * @return KieSession
      */
-    public static KieSession buildKieSessionFromRuleString(List<String> rules) {
-        // 默认使用Stream，支持事件
-        KieBase kieBase = decodeToKieBase(Model.STREAM, rules);
+    public static KieSession buildKieSessionFromRuleString(String ruleKey, String ruleContent) {
+        // TODO Model 模式了解，这里写死了
+        KieBase kieBase = decodeToKieBase(ruleContent, Model.STREAM);
         return kieBase.newKieSession();
     }
 
     /**
      * 根据规则字符串生成StatelessKieSession
-     * @param rules 规则字符串
+     * @param ruleKey 规则的key值
+     * @param ruleContent 规则内容字符串
      * @return StatelessKieSession
      */
-    public static StatelessKieSession buildStatelessKieSessionFromRuleString(List<String> rules) {
-        // 默认使用Stream，支持事件
-        KieBase kieBase = decodeToKieBase(Model.STREAM, rules);
+    public static StatelessKieSession buildStatelessKieSessionFromRuleString(String ruleKey, String ruleContent) {
+        // TODO Model 模式了解，这里写死了
+        KieBase kieBase = decodeToKieBase(ruleContent, Model.STREAM);
         return kieBase.newStatelessKieSession();
     }
 
     /**
      * 解析多个规则文件生成规则字符串集合
-     * @param filePaths 规则文件路径
+     * @param filePath 规则文件路径
      * @return 规则字符串集合
      */
-    public static List<String> getRuleFromFiles(String... filePaths) throws FileNotFoundException {
-        List<String> rules = new ArrayList<>();
-        for (String filePath : filePaths) {
-            rules.add(getRuleString(filePath));
-        }
-        return rules;
+    public static String getRuleFromFile(String filePath) throws FileNotFoundException {
+        return getRuleString(filePath);
     }
 
     /**
@@ -128,15 +127,13 @@ public class KieSessionUtil {
 
     /**
      * 根据规则字符串生成KieBase
+     * @param ruleContent 规则内容字符串
      * @param model
-     * @param rules 规则字符串
      * @return KieBase
      */
-    private static KieBase decodeToKieBase(Model model, List<String> rules) {
+    private static KieBase decodeToKieBase(String ruleContent, Model model) {
         KieHelper kieHelper = new KieHelper();
-        for (String drl : rules) {
-            kieHelper.addContent(drl, ResourceType.DRL);
-        }
+        kieHelper.addContent(ruleContent, ResourceType.DRL);
         hasErrorMessage(kieHelper.verify());
 
         KieBaseConfiguration config = kieHelper.ks.newKieBaseConfiguration();
@@ -216,7 +213,7 @@ public class KieSessionUtil {
      * 检查编译结果
      * @param results 编译结果
      */
-    private static void hasErrorMessage(Results results) {
+    public static void hasErrorMessage(Results results) {
         if (results.hasMessages(Message.Level.WARNING, Message.Level.ERROR)) {
             List<Message> messages = results.getMessages(Message.Level.WARNING, Message.Level.ERROR);
             for (Message message : messages) {
@@ -230,7 +227,7 @@ public class KieSessionUtil {
         }
     }
 
-    enum Model {
+    public enum Model {
         CLOUD("cloud"),
         STREAM("stream");
 

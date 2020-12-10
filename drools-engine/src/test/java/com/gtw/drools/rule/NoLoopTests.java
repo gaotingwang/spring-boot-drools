@@ -18,7 +18,7 @@ public class NoLoopTests {
     @Before
     public void before() throws FileNotFoundException {
         String drlFilePath = this.getClass().getClassLoader().getResource("rules/no-loop.drl").getPath();
-        kieSession = KieSessionUtil.buildKieSessionFromFiles(drlFilePath);
+        kieSession = KieSessionUtil.buildKieSessionFromFile(drlFilePath);
     }
 
     @Test

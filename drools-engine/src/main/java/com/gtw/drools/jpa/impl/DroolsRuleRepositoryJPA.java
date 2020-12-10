@@ -21,6 +21,7 @@ public class DroolsRuleRepositoryJPA implements IDroolsRuleRepository {
 
     @Override
     public Rule findRule(String business, String ruleName) {
+        // TODO 从缓存中和持久化中加载
         // todo 返回 rule
         return new Rule(business, ruleName, "package com.group.feedback.fetch;\n"
             + "//generated from Decision Table\n"

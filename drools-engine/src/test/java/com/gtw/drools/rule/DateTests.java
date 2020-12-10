@@ -17,7 +17,7 @@ public class DateTests {
 
         // 必须在获取Session前设置时间格式
         System.setProperty("drools.dateformat", "yyyy-MM-dd");
-        kieSession = KieSessionUtil.buildKieSessionFromFiles(drlFilePath);
+        kieSession = KieSessionUtil.buildKieSessionFromFile(drlFilePath);
     }
 
     @Test

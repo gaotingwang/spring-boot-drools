@@ -31,7 +31,7 @@ public class RHSTests {
     @Before
     public void before() throws FileNotFoundException {
         String drlFilePath = this.getClass().getClassLoader().getResource("drools/rule04.drl").getPath();
-        kieSession = KieSessionUtil.buildKieSessionFromFiles(drlFilePath);
+        kieSession = KieSessionUtil.buildKieSessionFromFile(drlFilePath);
     }
 
     @Test

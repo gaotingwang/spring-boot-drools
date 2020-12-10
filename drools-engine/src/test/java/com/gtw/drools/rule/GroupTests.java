@@ -18,7 +18,7 @@ public class GroupTests {
     @Before
     public void before() throws FileNotFoundException {
         String drlFilePath = this.getClass().getClassLoader().getResource("rules/group-rule.drl").getPath();
-        kieSession = KieSessionUtil.buildKieSessionFromFiles(drlFilePath);
+        kieSession = KieSessionUtil.buildKieSessionFromFile(drlFilePath);
     }
 
     @Test

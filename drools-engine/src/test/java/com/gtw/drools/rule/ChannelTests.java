@@ -18,7 +18,7 @@ public class ChannelTests {
     @Before
     public void before() throws FileNotFoundException {
         String drlFilePath = this.getClass().getClassLoader().getResource("rules/channel-rule.drl").getPath();
-        kieSession = KieSessionUtil.buildKieSessionFromFiles(drlFilePath);
+        kieSession = KieSessionUtil.buildKieSessionFromFile(drlFilePath);
     }
 
     @Test

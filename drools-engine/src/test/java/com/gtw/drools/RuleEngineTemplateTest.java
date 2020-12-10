@@ -13,6 +13,7 @@ import java.util.Date;
 import com.gtw.drools.domain.DecisionTable;
 import com.gtw.drools.jpa.impl.DroolsRuleRepositoryJPA;
 import com.gtw.drools.model.FeedBackInfo;
+import com.gtw.drools.util.KieBaseInstanceFactory;
 import org.junit.jupiter.api.Test;
 
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -22,7 +23,7 @@ class RuleEngineTemplateTest {
 
     @Test
     void executeWithFacts() {
-        RuleEngineTemplate template = new RuleEngineTemplate(new DroolsRuleRepositoryJPA());
+        RuleEngineTemplate template = new RuleEngineTemplate(new DroolsRuleRepositoryJPA(), new KieBaseInstanceFactory());
 
         FeedBackInfo feedBackInfo = new FeedBackInfo();
         feedBackInfo.setResponseLevel("VIP");
@@ -34,7 +35,7 @@ class RuleEngineTemplateTest {
 
     @Test
     void loadDecisionTable() throws FileNotFoundException {
-        RuleEngineTemplate template = new RuleEngineTemplate(new DroolsRuleRepositoryJPA());
+        RuleEngineTemplate template = new RuleEngineTemplate(new DroolsRuleRepositoryJPA(), new KieBaseInstanceFactory());
 
         String xlsFilePath = this.getClass().getClassLoader().getResource("./xls/fetch.xls").getPath();
         File file = new File(xlsFilePath);

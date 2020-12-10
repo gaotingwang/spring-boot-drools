@@ -1,7 +1,6 @@
 package com.gtw.drools;
 
 import java.io.InputStream;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -10,14 +9,18 @@ import com.gtw.drools.domain.DecisionTable;
 import com.gtw.drools.domain.Rule;
 import com.gtw.drools.excepiton.RuleException;
 import com.gtw.drools.repository.IDroolsRuleRepository;
+import com.gtw.drools.util.KieBaseInstanceFactory;
 import com.gtw.drools.util.KieSessionUtil;
+import com.gtw.drools.util.KieSessionUtil.Model;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.drools.decisiontable.InputType;
 import org.drools.decisiontable.parser.DefaultRuleSheetListener;
 import org.drools.decisiontable.parser.RuleSheetListener;
 import org.drools.template.model.Package;
+import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
+import org.kie.api.runtime.StatelessKieSession;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,13 +32,14 @@ import org.springframework.transaction.annotation.Transactional;
 @Slf4j
 public class RuleEngineTemplate {
 
-    private final IDroolsRuleRepository iDroolsRuleRepository;
+    private final IDroolsRuleRepository droolsRuleRepository;
+    private final KieBaseInstanceFactory kieBaseInstanceFactory;
 
-    public RuleEngineTemplate(IDroolsRuleRepository iDroolsRuleRepository) {
-        this.iDroolsRuleRepository = iDroolsRuleRepository;
+    public RuleEngineTemplate(IDroolsRuleRepository droolsRuleRepository,
+        KieBaseInstanceFactory kieBaseInstanceFactory) {
+        this.droolsRuleRepository = droolsRuleRepository;
+        this.kieBaseInstanceFactory = kieBaseInstanceFactory;
     }
-
-    // TODO @PostConstruct规则预加载
 
     /**
      * 规则持久化
@@ -44,7 +48,11 @@ public class RuleEngineTemplate {
     @Transactional(rollbackFor = Exception.class)
     public void writeRule(Rule rule) {
         if(rule.verify()) {
-            iDroolsRuleRepository.save(rule);
+            droolsRuleRepository.save(rule);
+            String ruleKey = buildRuleKey(rule.getBusiness(), rule.getName());
+            // 广播方式通知清除集群机器上的缓存
+            // MetaQUtils.send(IMetaQInfo.REFRESH_CACHE_TOPIC, IMetaQInfo.REFRESH_DROOLS_RULE_TAG, UUID.randomUUID().toString(), ruleKey);
+            log.info("{} 规则缓存已清除", ruleKey);
         } else {
             throw new RuleException(rule.getName() + "：规则内容不正确，无法存储！");
         }
@@ -59,8 +67,22 @@ public class RuleEngineTemplate {
         if(StringUtils.isBlank(business) || StringUtils.isBlank(ruleName)) {
             throw new RuleException("规则场景或名称为空");
         }
-        // TODO 从缓存中加载
-        return iDroolsRuleRepository.findRule(business, ruleName);
+        return droolsRuleRepository.findRule(business, ruleName);
+    }
+
+    /**
+     * 清除指定ruleKey对应的KieBase
+     * @param ruleKey 规则的key
+     */
+    public void clearKieBaseWithRuleKey(String ruleKey) {
+        kieBaseInstanceFactory.deleteKieBaseWithRuleKey(ruleKey);
+    }
+
+    /**
+     * 清空所有缓存的KieBase
+     */
+    public void clearKieBase() {
+        kieBaseInstanceFactory.clearKieBase();
     }
 
     /**
@@ -77,7 +99,8 @@ public class RuleEngineTemplate {
             throw new RuleException(ruleName + "规则不存在");
         }
 
-        KieSession kieSession = KieSessionUtil.buildKieSessionFromRuleString(Collections.singletonList(rule.getContent()));
+        String ruleKey = buildRuleKey(rule.getBusiness(), rule.getName());
+        KieSession kieSession = buildKieSessionFromRuleString(ruleKey, rule.getContent());
         try {
             // 默认注入log功能
             kieSession.setGlobal("log", log);
@@ -115,6 +138,38 @@ public class RuleEngineTemplate {
         }
 
         return new DecisionTable(ruleContent, agendaGroups);
+    }
+
+    /**
+     * 根据规则字符串生成KieSession
+     * @param ruleKey 规则的key值
+     * @param ruleContent 规则内容字符串
+     * @return KieSession
+     */
+    private KieSession buildKieSessionFromRuleString(String ruleKey, String ruleContent) {
+        KieBase kieBase = kieBaseInstanceFactory.getKieBaseInstance(ruleKey, ruleContent, Model.STREAM);
+        if(kieBase == null) {
+            throw new RuntimeException("生成规则内容不正确，ruleKey = " + ruleKey + ", ruleContent = " +ruleContent);
+        }
+        return kieBase.newKieSession();
+    }
+
+    /**
+     * 根据规则字符串生成StatelessKieSession
+     * @param ruleKey 规则的key值
+     * @param ruleContent 规则内容字符串
+     * @return StatelessKieSession
+     */
+    private StatelessKieSession buildStatelessKieSessionFromRuleString(String ruleKey, String ruleContent) {
+        KieBase kieBase = kieBaseInstanceFactory.getKieBaseInstance(ruleKey, ruleContent, Model.STREAM);
+        if(kieBase == null) {
+            throw new RuntimeException("生成规则内容不正确，ruleKey = " + ruleKey + ", ruleContent = " +ruleContent);
+        }
+        return kieBase.newStatelessKieSession();
+    }
+
+    private String buildRuleKey(String business, String ruleName) {
+        return "rule_" + business + "_" + ruleName;
     }
 
 }
