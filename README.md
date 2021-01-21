@@ -1,4 +1,16 @@
 # spring-boot-drools
+### Drools简介
+
+Drools是业务逻辑集成平台，包含4个项目：
+
+- Drools Workbench (BRMS/BPMS)：业务规则管理系统
+- Drools Expert (rule engine)：规则引擎，Drools的核心部分
+- Drools Fusion (cep/temporal reasoning)：复杂事件处理
+- jBPM (process/workflow)：工作流引擎
+- OptaPlanner：规划引擎
+
+
+
 ### KIE的生命周期
 
 - 编写：编写规则文件，比如：DRL，BPMN2、决策表、实体类等。
@@ -12,7 +24,23 @@
 
 
 
+### 相关概念
+
+- 事实(Fact)：业务数据，对象之间及对象属性之间的关系
+- 规则(Rule)：是由条件和行动构成的推理语句，一般表示为`if...then...`。一个规则的`if`部分称为`LHS`，`then`部分称为`RHS`。
+- 模式(Module)：指`if`语句的条件，模式是指不能再继续分割下去的最小原子条件。
+
+
+
 ### 组成
+
+每一个规则引擎都是一个密封的上下文，定义的规则将根据提供给这个特定实例的数据进行评估。
+
+规则引擎被看作是在服务器中运行它们的大而单一的进程，用户可以发送数据给它处理。另一方面，Drools允许在本地为应用程序生成轻量级实例。
+
+通常有多个实例处理不同的规则和数据，而不仅仅是一个大实例。
+
+为了生成规则引擎的新实例，需要了解以下概念：
 
 - KieServices 
 
